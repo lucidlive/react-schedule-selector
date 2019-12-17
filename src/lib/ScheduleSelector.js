@@ -1,22 +1,13 @@
 // @flow
-
 import * as React from 'react'
+import { Fragment } from 'react';
 import styled from 'styled-components'
-
-// Import only the methods we need from date-fns in order to keep build size small
-import addHours from 'date-fns/add_hours'
-import addDays from 'date-fns/add_days'
-import startOfDay from 'date-fns/start_of_day'
-import isSameMinute from 'date-fns/is_same_minute'
-import formatDate from 'date-fns/format'
-
-import { Text, Subtitle } from './typography'
 import colors from './colors'
 import selectionSchemes from './selection-schemes'
 
-const formatHour = (hour: number): string => {
+const formatHour = (hour: number, amPM:Array): string => {
   const h = hour === 0 || hour === 12 || hour === 24 ? 12 : hour % 12
-  const abb = hour < 12 || hour === 24 ? 'am' : 'pm'
+  const abb = hour < 12 || hour === 24 ? amPM[0] : amPM[1]
   return `${h}${abb}`
 }
 
@@ -25,41 +16,35 @@ const Wrapper = styled.div`
   align-items: center;
   width: 100%;
   user-select: none;
+  margin: ${props => props.fontSize};
 `
 
 const Grid = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
+  display: grid;
+  grid-template-columns: auto auto auto auto auto auto auto auto;
+  grid-template-rows: ${props => props.height} ${props => props.height} ${props => props.height} ${props => props.height} ${props => props.height} ${props => props.height} ${props => props.height} ${props => props.height} ${props => props.height} ${props => props.height};
   width: 100%;
+  grid-template-columns: repeat(8, 1fr);
 `
 
 const Column = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  flex-grow: 1;
 `
 
 export const GridCell = styled.div`
-  margin: ${props => props.margin}px;
   touch-action: none;
+  text-align:center;
+  line-height: ${props => props.height};
 `
 
 const DateCell = styled.div`
   width: 100%;
-  height: 25px;
+  height: ${props => props.height};
+  line-height: ${props => props.height};
   background-color: ${props => (props.selected ? props.selectedColor : props.unselectedColor)};
+  border:1px #fff solid;
 
   &:hover {
     background-color: ${props => props.hoveredColor};
-  }
-`
-
-const DateLabel = styled(Subtitle)`
-  height: 30px;
-  @media (max-width: 699px) {
-    font-size: 12px;
   }
 `
 
@@ -67,20 +52,10 @@ const TimeLabelCell = styled.div`
   position: relative;
   display: block;
   width: 100%;
-  height: 25px;
-  margin: 3px 0;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`
-
-const TimeText = styled(Text)`
-  margin: 0;
-  @media (max-width: 699px) {
-    font-size: 10px;
-  }
+  height: ${props => props.height};
+  line-height: ${props => props.height};
   text-align: right;
+  padding-right:8px;
 `
 
 type PropsType = {
@@ -96,6 +71,9 @@ type PropsType = {
   unselectedColor: string,
   selectedColor: string,
   hoveredColor: string,
+  cellHeight: string,
+  daysOfWeek:Array,
+  amPM:Array,
   renderDateCell?: (Date, boolean, (HTMLElement) => void) => React.Node
 }
 
@@ -134,25 +112,37 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
     startDate: new Date(),
     dateFormat: 'M/D',
     margin: 3,
+    cellHeight: '55px',
     selectedColor: colors.blue,
     unselectedColor: colors.paleBlue,
     hoveredColor: colors.lightBlue,
-    onChange: () => {}
+    onChange: () => {},
+    amPM:['am','pm'],
+    daysOfWeek: [
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday'
+    ]
   }
 
   constructor(props: PropsType) {
     super(props)
-
     // Generate list of dates to render cells for
-    const startTime = startOfDay(props.startDate)
     this.dates = []
     this.cellToDate = new Map()
     for (let d = 0; d < props.numDays; d += 1) {
       const currentDay = []
       for (let h = props.minTime; h <= props.maxTime; h += 1) {
-        currentDay.push(addHours(addDays(startTime, d), h))
+        currentDay.push({
+          'hour': h,
+          'day': d,
+          });
       }
-      this.dates.push(currentDay)
+      this.dates.push(currentDay);
     }
 
     this.state = {
@@ -241,32 +231,35 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
     let nextDraft = [...this.props.selection]
     if (selectionType === 'add') {
       nextDraft = Array.from(new Set([...nextDraft, ...newSelection]))
+
     } else if (selectionType === 'remove') {
-      nextDraft = nextDraft.filter(a => !newSelection.find(b => isSameMinute(a, b)))
+      nextDraft = nextDraft.filter(a => !newSelection.find(b => a.hour === b.hour && a.day === b.day))
     }
 
     this.setState({ selectionDraft: nextDraft }, callback)
   }
 
   // Isomorphic (mouse and touch) handler since starting a selection works the same way for both classes of user input
-  handleSelectionStartEvent(startTime: Date) {
+  handleSelectionStartEvent(selectionStart) {
     // Check if the startTime cell is selected/unselected to determine if this drag-select should
     // add values or remove values
-    const timeSelected = this.props.selection.find(a => isSameMinute(a, startTime))
+    const timeSelected = this.props.selection.find(a => a.hour === selectionStart.hour && a.day === selectionStart.day);
+    const selectionType =  timeSelected ? 'remove' : 'add';
+
     this.setState({
-      selectionType: timeSelected ? 'remove' : 'add',
-      selectionStart: startTime
+      selectionType,
+      selectionStart
     })
   }
 
-  handleMouseEnterEvent(time: Date) {
+  handleMouseEnterEvent(time) {
     // Need to update selection draft on mouseup as well in order to catch the cases
     // where the user just clicks on a single cell (because no mouseenter events fire
     // in this scenario)
     this.updateAvailabilityDraft(time)
   }
 
-  handleMouseUpEvent(time: Date) {
+  handleMouseUpEvent(time) {
     this.updateAvailabilityDraft(time)
     // Don't call this.endSelection() here because the document mouseup handler will do it
   }
@@ -294,39 +287,51 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
   }
 
   renderTimeLabels = (): React.Element<*> => {
-    const labels = [<DateLabel key={-1} />] // Ensures time labels start at correct location
+    const labels = [] // Ensures time labels start at correct location
+    let count=0;
     for (let t = this.props.minTime; t <= this.props.maxTime; t += 1) {
       labels.push(
-        <TimeLabelCell key={t}>
-          <TimeText>{formatHour(t)}</TimeText>
-        </TimeLabelCell>
+        <Fragment key={`time-${t}`}>
+          <TimeLabelCell height={this.props.cellHeight}>
+            <span>{formatHour(t, this.props.amPM)}</span>
+          </TimeLabelCell>
+          {this.dates.map((dayOfTimes) => this.renderHourCell(dayOfTimes, count))}
+        </Fragment>
       )
+      count++;
     }
-    return <Column margin={this.props.margin}>{labels}</Column>
+
+    return labels;
   }
 
-  renderDateColumn = (dayOfTimes: Array<Date>) => (
-    <Column key={dayOfTimes[0]} margin={this.props.margin}>
-      <GridCell margin={this.props.margin}>
-        <DateLabel>{formatDate(dayOfTimes[0], this.props.dateFormat)}</DateLabel>
-      </GridCell>
-      {dayOfTimes.map(time => this.renderDateCellWrapper(time))}
-    </Column>
-  )
+  renderHourCell = (dayOfTimes: Array<Date>, t) => (
+    <div key={dayOfTimes[t].day}>
+      {this.renderDateCellWrapper(dayOfTimes[t])}
+    </div>
+  );
 
-  renderDateCellWrapper = (time: Date): React.Element<*> => {
+  renderDateColumn = (item, key) => (
+    <Column key={`${item}-${key}`} margin={this.props.margin}>
+      <GridCell margin={this.props.margin} height={this.props.cellHeight}>
+        <span>{item}</span>
+      </GridCell>
+    </Column>
+  );
+
+  renderDateCellWrapper = (time, key): React.Element<*> => {
     const startHandler = () => {
       this.handleSelectionStartEvent(time)
     }
 
-    const selected = Boolean(this.state.selectionDraft.find(a => isSameMinute(a, time)))
+    const selected = Boolean(this.state.selectionDraft.find(a => a.day === time.day && a.hour === time.hour));
 
     return (
       <GridCell
         className="rgdp__grid-cell"
         role="presentation"
         margin={this.props.margin}
-        key={time.toISOString()}
+        height={this.props.cellHeight}
+        key={`${time.day}-${time.hour}`}
         // Mouse handlers
         onMouseDown={startHandler}
         onMouseEnter={() => {
@@ -348,7 +353,7 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
     )
   }
 
-  renderDateCell = (time: Date, selected: boolean): React.Node => {
+  renderDateCell = (time, selected: boolean): React.Node => {
     const refSetter = (dateCell: HTMLElement) => {
       this.cellToDate.set(dateCell, time)
     }
@@ -359,6 +364,7 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
         <DateCell
           selected={selected}
           innerRef={refSetter}
+          height={this.props.cellHeight}
           selectedColor={this.props.selectedColor}
           unselectedColor={this.props.unselectedColor}
           hoveredColor={this.props.hoveredColor}
@@ -375,9 +381,13 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
             innerRef={el => {
               this.gridRef = el
             }}
+            height={this.props.cellHeight}
           >
-            {this.renderTimeLabels()}
-            {this.dates.map(this.renderDateColumn)}
+            <div />
+            {this.props.daysOfWeek.map(this.renderDateColumn)}
+            {/* this.dates.map(this.renderDateColumn) */}
+            { this.renderTimeLabels()}
+          {/* this.renderTimeLabels() */}
           </Grid>
         }
       </Wrapper>

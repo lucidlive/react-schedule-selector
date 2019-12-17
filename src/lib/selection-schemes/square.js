@@ -1,17 +1,10 @@
-// @flow
-
-import isBefore from 'date-fns/is_before'
-import startOfDay from 'date-fns/start_of_day'
-
-import * as dateUtils from '../date-utils'
-
 const square = (selectionStart: ?Date, selectionEnd: ?Date, dateList: Array<Array<Date>>): Array<Date> => {
   let selected: Array<Date> = []
   if (selectionEnd == null) {
     if (selectionStart) selected = [selectionStart]
   } else if (selectionStart) {
-    const dateIsReversed = isBefore(startOfDay(selectionEnd), startOfDay(selectionStart))
-    const timeIsReversed = selectionStart.getHours() > selectionEnd.getHours()
+    const dateIsReversed = selectionStart.day > selectionEnd.day;
+    const timeIsReversed = selectionStart.hour > selectionEnd.hour;
 
     selected = dateList.reduce(
       (acc, dayOfTimes) =>
@@ -20,16 +13,10 @@ const square = (selectionStart: ?Date, selectionEnd: ?Date, dateList: Array<Arra
             t =>
               selectionStart &&
               selectionEnd &&
-              dateUtils.dateIsBetween(
-                dateIsReversed ? selectionEnd : selectionStart,
-                t,
-                dateIsReversed ? selectionStart : selectionEnd
-              ) &&
-              dateUtils.timeIsBetween(
-                timeIsReversed ? selectionEnd : selectionStart,
-                t,
-                timeIsReversed ? selectionStart : selectionEnd
-              )
+              t.day >= (dateIsReversed ? selectionEnd.day : selectionStart.day) &&
+              t.day <= (dateIsReversed ? selectionStart.day : selectionEnd.day) &&
+              t.hour >= (timeIsReversed ? selectionEnd.hour : selectionStart.hour) &&
+              t.hour <= (timeIsReversed ? selectionStart.hour : selectionEnd.hour)
           )
         ),
       []
