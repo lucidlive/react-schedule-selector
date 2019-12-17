@@ -11,28 +11,6 @@ var _styledComponents = require('styled-components');
 
 var _styledComponents2 = _interopRequireDefault(_styledComponents);
 
-var _add_hours = require('date-fns/add_hours');
-
-var _add_hours2 = _interopRequireDefault(_add_hours);
-
-var _add_days = require('date-fns/add_days');
-
-var _add_days2 = _interopRequireDefault(_add_days);
-
-var _start_of_day = require('date-fns/start_of_day');
-
-var _start_of_day2 = _interopRequireDefault(_start_of_day);
-
-var _is_same_minute = require('date-fns/is_same_minute');
-
-var _is_same_minute2 = _interopRequireDefault(_is_same_minute);
-
-var _format = require('date-fns/format');
-
-var _format2 = _interopRequireDefault(_format);
-
-var _typography = require('./typography');
-
 var _colors = require('./colors');
 
 var _colors2 = _interopRequireDefault(_colors);
@@ -51,60 +29,77 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-// Import only the methods we need from date-fns in order to keep build size small
-
-
-var formatHour = function formatHour(hour) {
+var formatHour = function formatHour(hour, amPM) {
   var h = hour === 0 || hour === 12 || hour === 24 ? 12 : hour % 12;
-  var abb = hour < 12 || hour === 24 ? 'am' : 'pm';
+  var abb = hour < 12 || hour === 24 ? amPM[0] : amPM[1];
   return '' + h + abb;
 };
 
-var Wrapper = (0, _styledComponents2.default)('div').withConfig({
+var Wrapper = _styledComponents2.default.div.withConfig({
   displayName: 'ScheduleSelector__Wrapper',
   componentId: 'sc-10qe3m2-0'
-})(['display:flex;align-items:center;width:100%;user-select:none;']);
-
-var Grid = (0, _styledComponents2.default)('div').withConfig({
-  displayName: 'ScheduleSelector__Grid',
-  componentId: 'sc-10qe3m2-1'
-})(['display:flex;flex-direction:row;align-items:stretch;width:100%;']);
-
-var Column = (0, _styledComponents2.default)('div').withConfig({
-  displayName: 'ScheduleSelector__Column',
-  componentId: 'sc-10qe3m2-2'
-})(['display:flex;flex-direction:column;justify-content:space-evenly;flex-grow:1;']);
-
-var GridCell = exports.GridCell = (0, _styledComponents2.default)('div').withConfig({
-  displayName: 'ScheduleSelector__GridCell',
-  componentId: 'sc-10qe3m2-3'
-})(['margin:', 'px;touch-action:none;'], function (props) {
-  return props.margin;
+})(['display:flex;align-items:center;width:100%;user-select:none;margin:', ';'], function (props) {
+  return props.fontSize;
 });
 
-var DateCell = (0, _styledComponents2.default)('div').withConfig({
+var Grid = _styledComponents2.default.div.withConfig({
+  displayName: 'ScheduleSelector__Grid',
+  componentId: 'sc-10qe3m2-1'
+})(['display:grid;grid-template-columns:auto auto auto auto auto auto auto auto;grid-template-rows:', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ';width:100%;grid-template-columns:repeat(8,1fr);'], function (props) {
+  return props.height;
+}, function (props) {
+  return props.height;
+}, function (props) {
+  return props.height;
+}, function (props) {
+  return props.height;
+}, function (props) {
+  return props.height;
+}, function (props) {
+  return props.height;
+}, function (props) {
+  return props.height;
+}, function (props) {
+  return props.height;
+}, function (props) {
+  return props.height;
+}, function (props) {
+  return props.height;
+});
+
+var Column = _styledComponents2.default.div.withConfig({
+  displayName: 'ScheduleSelector__Column',
+  componentId: 'sc-10qe3m2-2'
+})(['']);
+
+var GridCell = exports.GridCell = _styledComponents2.default.div.withConfig({
+  displayName: 'ScheduleSelector__GridCell',
+  componentId: 'sc-10qe3m2-3'
+})(['touch-action:none;text-align:center;line-height:', ';'], function (props) {
+  return props.height;
+});
+
+var DateCell = _styledComponents2.default.div.withConfig({
   displayName: 'ScheduleSelector__DateCell',
   componentId: 'sc-10qe3m2-4'
-})(['width:100%;height:25px;background-color:', ';&:hover{background-color:', ';}'], function (props) {
+})(['width:100%;height:', ';line-height:', ';background-color:', ';border:1px #fff solid;&:hover{background-color:', ';}'], function (props) {
+  return props.height;
+}, function (props) {
+  return props.height;
+}, function (props) {
   return props.selected ? props.selectedColor : props.unselectedColor;
 }, function (props) {
   return props.hoveredColor;
 });
 
-var DateLabel = (0, _styledComponents2.default)(_typography.Subtitle).withConfig({
-  displayName: 'ScheduleSelector__DateLabel',
-  componentId: 'sc-10qe3m2-5'
-})(['height:30px;@media (max-width:699px){font-size:12px;}']);
-
-var TimeLabelCell = (0, _styledComponents2.default)('div').withConfig({
+var TimeLabelCell = _styledComponents2.default.div.withConfig({
   displayName: 'ScheduleSelector__TimeLabelCell',
-  componentId: 'sc-10qe3m2-6'
-})(['position:relative;display:block;width:100%;height:25px;margin:3px 0;text-align:center;display:flex;justify-content:center;align-items:center;']);
-
-var TimeText = (0, _styledComponents2.default)(_typography.Text).withConfig({
-  displayName: 'ScheduleSelector__TimeText',
-  componentId: 'sc-10qe3m2-7'
-})(['margin:0;@media (max-width:699px){font-size:10px;}text-align:right;']);
+  componentId: 'sc-10qe3m2-5'
+})(['position:relative;display:block;width:100%;height:', ';line-height:', ';text-align:right;padding-right:8px;'], function (props) {
+  return props.height;
+}, function (props) {
+  return props.height;
+});
 
 var preventScroll = exports.preventScroll = function preventScroll(e) {
   e.preventDefault();
@@ -120,51 +115,62 @@ var ScheduleSelector = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, _React$Component.call(this, props));
 
     _this.renderTimeLabels = function () {
-      var labels = [React.createElement(DateLabel, { key: -1 })]; // Ensures time labels start at correct location
+      var labels = []; // Ensures time labels start at correct location
+      var count = 0;
       for (var t = _this.props.minTime; t <= _this.props.maxTime; t += 1) {
         labels.push(React.createElement(
-          TimeLabelCell,
-          { key: t },
+          _react.Fragment,
+          { key: 'time-' + t },
           React.createElement(
-            TimeText,
-            null,
-            formatHour(t)
-          )
+            TimeLabelCell,
+            { height: _this.props.cellHeight },
+            React.createElement(
+              'span',
+              null,
+              formatHour(t, _this.props.amPM)
+            )
+          ),
+          _this.dates.map(function (dayOfTimes) {
+            return _this.renderHourCell(dayOfTimes, count);
+          })
         ));
+        count++;
       }
+
+      return labels;
+    };
+
+    _this.renderHourCell = function (dayOfTimes, t) {
       return React.createElement(
-        Column,
-        { margin: _this.props.margin },
-        labels
+        'div',
+        { key: dayOfTimes[t].day },
+        _this.renderDateCellWrapper(dayOfTimes[t])
       );
     };
 
-    _this.renderDateColumn = function (dayOfTimes) {
+    _this.renderDateColumn = function (item, key) {
       return React.createElement(
         Column,
-        { key: dayOfTimes[0], margin: _this.props.margin },
+        { key: item + '-' + key, margin: _this.props.margin },
         React.createElement(
           GridCell,
-          { margin: _this.props.margin },
+          { margin: _this.props.margin, height: _this.props.cellHeight },
           React.createElement(
-            DateLabel,
+            'span',
             null,
-            (0, _format2.default)(dayOfTimes[0], _this.props.dateFormat)
+            item
           )
-        ),
-        dayOfTimes.map(function (time) {
-          return _this.renderDateCellWrapper(time);
-        })
+        )
       );
     };
 
-    _this.renderDateCellWrapper = function (time) {
+    _this.renderDateCellWrapper = function (time, key) {
       var startHandler = function startHandler() {
         _this.handleSelectionStartEvent(time);
       };
 
       var selected = Boolean(_this.state.selectionDraft.find(function (a) {
-        return (0, _is_same_minute2.default)(a, time);
+        return a.day === time.day && a.hour === time.hour;
       }));
 
       return React.createElement(
@@ -173,7 +179,8 @@ var ScheduleSelector = function (_React$Component) {
           className: 'rgdp__grid-cell',
           role: 'presentation',
           margin: _this.props.margin,
-          key: time.toISOString()
+          height: _this.props.cellHeight,
+          key: time.day + '-' + time.hour
           // Mouse handlers
           , onMouseDown: startHandler,
           onMouseEnter: function onMouseEnter() {
@@ -204,6 +211,7 @@ var ScheduleSelector = function (_React$Component) {
         return React.createElement(DateCell, {
           selected: selected,
           innerRef: refSetter,
+          height: _this.props.cellHeight,
           selectedColor: _this.props.selectedColor,
           unselectedColor: _this.props.unselectedColor,
           hoveredColor: _this.props.hoveredColor
@@ -211,13 +219,15 @@ var ScheduleSelector = function (_React$Component) {
       }
     };
 
-    var startTime = (0, _start_of_day2.default)(props.startDate);
     _this.dates = [];
     _this.cellToDate = new Map();
     for (var d = 0; d < props.numDays; d += 1) {
       var currentDay = [];
       for (var h = props.minTime; h <= props.maxTime; h += 1) {
-        currentDay.push((0, _add_hours2.default)((0, _add_days2.default)(startTime, d), h));
+        currentDay.push({
+          'hour': h,
+          'day': d
+        });
       }
       _this.dates.push(currentDay);
     }
@@ -323,7 +333,7 @@ var ScheduleSelector = function (_React$Component) {
     } else if (selectionType === 'remove') {
       nextDraft = nextDraft.filter(function (a) {
         return !newSelection.find(function (b) {
-          return (0, _is_same_minute2.default)(a, b);
+          return a.hour === b.hour && a.day === b.day;
         });
       });
     }
@@ -334,15 +344,17 @@ var ScheduleSelector = function (_React$Component) {
   // Isomorphic (mouse and touch) handler since starting a selection works the same way for both classes of user input
 
 
-  ScheduleSelector.prototype.handleSelectionStartEvent = function handleSelectionStartEvent(startTime) {
+  ScheduleSelector.prototype.handleSelectionStartEvent = function handleSelectionStartEvent(selectionStart) {
     // Check if the startTime cell is selected/unselected to determine if this drag-select should
     // add values or remove values
     var timeSelected = this.props.selection.find(function (a) {
-      return (0, _is_same_minute2.default)(a, startTime);
+      return a.hour === selectionStart.hour && a.day === selectionStart.day;
     });
+    var selectionType = timeSelected ? 'remove' : 'add';
+
     this.setState({
-      selectionType: timeSelected ? 'remove' : 'add',
-      selectionStart: startTime
+      selectionType: selectionType,
+      selectionStart: selectionStart
     });
   };
 
@@ -393,10 +405,12 @@ var ScheduleSelector = function (_React$Component) {
         {
           innerRef: function innerRef(el) {
             _this3.gridRef = el;
-          }
+          },
+          height: this.props.cellHeight
         },
-        this.renderTimeLabels(),
-        this.dates.map(this.renderDateColumn)
+        React.createElement('div', null),
+        this.props.daysOfWeek.map(this.renderDateColumn),
+        this.renderTimeLabels()
       )
     );
   };
@@ -413,9 +427,12 @@ ScheduleSelector.defaultProps = {
   startDate: new Date(),
   dateFormat: 'M/D',
   margin: 3,
+  cellHeight: '55px',
   selectedColor: _colors2.default.blue,
   unselectedColor: _colors2.default.paleBlue,
   hoveredColor: _colors2.default.lightBlue,
-  onChange: function onChange() {}
+  onChange: function onChange() {},
+  amPM: ['am', 'pm'],
+  daysOfWeek: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 };
 exports.default = ScheduleSelector;
