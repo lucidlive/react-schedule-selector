@@ -38,12 +38,12 @@ var formatHour = function formatHour(hour, amPM) {
 var Wrapper = _styledComponents2.default.div.withConfig({
   displayName: 'ScheduleSelector__Wrapper',
   componentId: 'sc-10qe3m2-0'
-})(['display:flex;align-items:center;width:100%;user-select:none;']);
+})(['display:flex;align-items:center;width:100%;user-select:none;box-sizing:border-box;']);
 
 var Grid = _styledComponents2.default.div.withConfig({
   displayName: 'ScheduleSelector__Grid',
   componentId: 'sc-10qe3m2-1'
-})(['display:grid;grid-template-columns:auto auto auto auto auto auto auto auto;grid-template-rows:', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ';width:100%;grid-template-columns:repeat(8,1fr);'], function (props) {
+})(['display:grid;grid-template-columns:auto auto auto auto auto auto auto auto;grid-template-rows:', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ';width:100%;grid-template-columns:repeat(8,1fr);box-sizing:border-box;'], function (props) {
   return props.height;
 }, function (props) {
   return props.height;
@@ -73,14 +73,14 @@ var Column = _styledComponents2.default.div.withConfig({
 var GridCell = exports.GridCell = _styledComponents2.default.div.withConfig({
   displayName: 'ScheduleSelector__GridCell',
   componentId: 'sc-10qe3m2-3'
-})(['touch-action:none;text-align:center;line-height:', ';'], function (props) {
+})(['touch-action:none;text-align:center;line-height:', ';box-sizing:border-box;'], function (props) {
   return props.height;
 });
 
 var GridHeader = exports.GridHeader = _styledComponents2.default.div.withConfig({
   displayName: 'ScheduleSelector__GridHeader',
   componentId: 'sc-10qe3m2-4'
-})(['touch-action:none;text-align:center;line-height:', ';border-right:1px ', ' solid;background:', ';color:', ';'], function (props) {
+})(['touch-action:none;text-align:center;line-height:', ';border-right:1px ', ' solid;background:', ';color:', ';box-sizing:border-box;'], function (props) {
   return props.height;
 }, function (props) {
   return props.lineColor;
@@ -93,7 +93,7 @@ var GridHeader = exports.GridHeader = _styledComponents2.default.div.withConfig(
 var DateCell = _styledComponents2.default.div.withConfig({
   displayName: 'ScheduleSelector__DateCell',
   componentId: 'sc-10qe3m2-5'
-})(['width:100%;height:', ';line-height:', ';background-color:', ';border-bottom:1px ', ' solid;border-right:1px ', ' solid;&:hover{background-color:', ';}'], function (props) {
+})(['width:100%;height:', ';line-height:', ';background-color:', ';border-bottom:1px ', ' solid;border-right:1px ', ' solid;box-sizing:border-box;&:hover{background-color:', ';}'], function (props) {
   return props.height;
 }, function (props) {
   return props.height;
@@ -110,7 +110,7 @@ var DateCell = _styledComponents2.default.div.withConfig({
 var TimeLabelCell = _styledComponents2.default.div.withConfig({
   displayName: 'ScheduleSelector__TimeLabelCell',
   componentId: 'sc-10qe3m2-6'
-})(['position:relative;display:block;width:100%;height:', ';line-height:', ';text-align:center;border-right:1px ', ' solid;&:after{content:" ";width:20px;height:1px;background:#e3edf7;position:absolute;bottom:0px;right:0;}'], function (props) {
+})(['position:relative;display:block;width:100%;height:', ';line-height:', ';text-align:center;border-right:1px ', ' solid;box-sizing:border-box;&:after{content:" ";width:20px;height:1px;background:#e3edf7;position:absolute;bottom:0px;right:0;}'], function (props) {
   return props.height;
 }, function (props) {
   return props.height;
