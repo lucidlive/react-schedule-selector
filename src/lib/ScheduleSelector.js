@@ -16,6 +16,7 @@ const Wrapper = styled.div`
   align-items: center;
   width: 100%;
   user-select: none;
+  box-sizing: border-box;
 `
 
 const Grid = styled.div`
@@ -24,6 +25,7 @@ const Grid = styled.div`
   grid-template-rows: ${props => props.height} ${props => props.height} ${props => props.height} ${props => props.height} ${props => props.height} ${props => props.height} ${props => props.height} ${props => props.height} ${props => props.height} ${props => props.height};
   width: 100%;
   grid-template-columns: repeat(8, 1fr);
+  box-sizing: border-box;
 `
 
 const Column = styled.div`
@@ -33,6 +35,7 @@ export const GridCell = styled.div`
   touch-action: none;
   text-align:center;
   line-height: ${props => props.height};
+  box-sizing: border-box;
 `
 
 export const GridHeader = styled.div`
@@ -42,6 +45,7 @@ export const GridHeader = styled.div`
   border-right:1px ${props => props.lineColor} solid;
   background: ${props => props.backgroundColor};
   color: ${props => props.color};
+  box-sizing: border-box;
 `
 
 const DateCell = styled.div`
@@ -51,6 +55,7 @@ const DateCell = styled.div`
   background-color: ${props => (props.selected ? props.selectedColor : '#fff')};
   border-bottom: 1px ${props => props.lineColor} solid;
   border-right:1px ${props => props.lineColor} solid;
+  box-sizing: border-box;
 
   &:hover {
     background-color: ${props => props.hoveredColor};
@@ -65,6 +70,7 @@ const TimeLabelCell = styled.div`
   line-height: ${props => props.height};
   text-align: center;
   border-right:1px ${props => props.lineColor} solid;
+  box-sizing: border-box;
 
   &:after {
     content:" ";
