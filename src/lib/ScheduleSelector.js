@@ -414,7 +414,7 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
               color={this.props.rootCellColor}
               backgroundColor={this.props.rootCellBackgroundColor}
               >
-              Time
+              {this.props.timeLabel}
             </GridHeader>
             {this.props.daysOfWeek.map(this.renderDateColumn)}
             {/* this.dates.map(this.renderDateColumn) */}

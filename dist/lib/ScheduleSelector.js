@@ -1,7 +1,7 @@
 'use strict';
 
 exports.__esModule = true;
-exports.preventScroll = exports.GridCell = undefined;
+exports.preventScroll = exports.GridHeader = exports.GridCell = undefined;
 
 var _react = require('react');
 
@@ -32,15 +32,13 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var formatHour = function formatHour(hour, amPM) {
   var h = hour === 0 || hour === 12 || hour === 24 ? 12 : hour % 12;
   var abb = hour < 12 || hour === 24 ? amPM[0] : amPM[1];
-  return '' + h + abb;
+  return h + ' ' + abb;
 };
 
 var Wrapper = _styledComponents2.default.div.withConfig({
   displayName: 'ScheduleSelector__Wrapper',
   componentId: 'sc-10qe3m2-0'
-})(['display:flex;align-items:center;width:100%;user-select:none;margin:', ';'], function (props) {
-  return props.fontSize;
-});
+})(['display:flex;align-items:center;width:100%;user-select:none;']);
 
 var Grid = _styledComponents2.default.div.withConfig({
   displayName: 'ScheduleSelector__Grid',
@@ -79,26 +77,45 @@ var GridCell = exports.GridCell = _styledComponents2.default.div.withConfig({
   return props.height;
 });
 
+var GridHeader = exports.GridHeader = _styledComponents2.default.div.withConfig({
+  displayName: 'ScheduleSelector__GridHeader',
+  componentId: 'sc-10qe3m2-4'
+})(['touch-action:none;text-align:center;line-height:', ';border-right:1px ', ' solid;background:', ';color:', ';'], function (props) {
+  return props.height;
+}, function (props) {
+  return props.lineColor;
+}, function (props) {
+  return props.backgroundColor;
+}, function (props) {
+  return props.color;
+});
+
 var DateCell = _styledComponents2.default.div.withConfig({
   displayName: 'ScheduleSelector__DateCell',
-  componentId: 'sc-10qe3m2-4'
-})(['width:100%;height:', ';line-height:', ';background-color:', ';border:1px #fff solid;&:hover{background-color:', ';}'], function (props) {
+  componentId: 'sc-10qe3m2-5'
+})(['width:100%;height:', ';line-height:', ';background-color:', ';border-bottom:1px ', ' solid;border-right:1px ', ' solid;&:hover{background-color:', ';}'], function (props) {
   return props.height;
 }, function (props) {
   return props.height;
 }, function (props) {
-  return props.selected ? props.selectedColor : props.unselectedColor;
+  return props.selected ? props.selectedColor : '#fff';
+}, function (props) {
+  return props.lineColor;
+}, function (props) {
+  return props.lineColor;
 }, function (props) {
   return props.hoveredColor;
 });
 
 var TimeLabelCell = _styledComponents2.default.div.withConfig({
   displayName: 'ScheduleSelector__TimeLabelCell',
-  componentId: 'sc-10qe3m2-5'
-})(['position:relative;display:block;width:100%;height:', ';line-height:', ';text-align:right;padding-right:8px;'], function (props) {
+  componentId: 'sc-10qe3m2-6'
+})(['position:relative;display:block;width:100%;height:', ';line-height:', ';text-align:center;border-right:1px ', ' solid;&:after{content:" ";width:20px;height:1px;background:#e3edf7;position:absolute;bottom:0px;right:0;}'], function (props) {
   return props.height;
 }, function (props) {
   return props.height;
+}, function (props) {
+  return props.lineColor;
 });
 
 var preventScroll = exports.preventScroll = function preventScroll(e) {
@@ -123,7 +140,7 @@ var ScheduleSelector = function (_React$Component) {
           { key: 'time-' + t },
           React.createElement(
             TimeLabelCell,
-            { height: _this.props.cellHeight },
+            { height: _this.props.cellHeight, lineColor: _this.props.lineColor },
             React.createElement(
               'span',
               null,
@@ -141,25 +158,22 @@ var ScheduleSelector = function (_React$Component) {
     };
 
     _this.renderHourCell = function (dayOfTimes, t) {
-      return React.createElement(
-        'div',
-        { key: dayOfTimes[t].day },
-        _this.renderDateCellWrapper(dayOfTimes[t])
-      );
+      return _this.renderDateCellWrapper(dayOfTimes[t]);
     };
 
     _this.renderDateColumn = function (item, key) {
       return React.createElement(
-        Column,
-        { key: item + '-' + key, margin: _this.props.margin },
+        GridHeader,
+        {
+          key: item + '-' + key,
+          margin: _this.props.margin,
+          height: _this.props.cellHeight,
+          lineColor: _this.props.lineColor,
+          backgroundColor: _this.props.headerBackgroundColor },
         React.createElement(
-          GridCell,
-          { margin: _this.props.margin, height: _this.props.cellHeight },
-          React.createElement(
-            'span',
-            null,
-            item
-          )
+          'span',
+          null,
+          item
         )
       );
     };
@@ -211,6 +225,7 @@ var ScheduleSelector = function (_React$Component) {
         return React.createElement(DateCell, {
           selected: selected,
           innerRef: refSetter,
+          lineColor: _this.props.lineColor,
           height: _this.props.cellHeight,
           selectedColor: _this.props.selectedColor,
           unselectedColor: _this.props.unselectedColor,
@@ -397,6 +412,7 @@ var ScheduleSelector = function (_React$Component) {
   ScheduleSelector.prototype.render = function render() {
     var _this3 = this;
 
+    console.log('The data ', this.props.selection);
     return React.createElement(
       Wrapper,
       null,
@@ -408,7 +424,16 @@ var ScheduleSelector = function (_React$Component) {
           },
           height: this.props.cellHeight
         },
-        React.createElement('div', null),
+        React.createElement(
+          GridHeader,
+          {
+            lineColor: this.props.lineColor,
+            height: this.props.cellHeight,
+            color: this.props.rootCellColor,
+            backgroundColor: this.props.rootCellBackgroundColor
+          },
+          this.props.timeLabel
+        ),
         this.props.daysOfWeek.map(this.renderDateColumn),
         this.renderTimeLabels()
       )
@@ -427,7 +452,11 @@ ScheduleSelector.defaultProps = {
   startDate: new Date(),
   dateFormat: 'M/D',
   margin: 3,
-  cellHeight: '55px',
+  cellHeight: '25px',
+  lineColor: '#eee',
+  rootCellColor: '#000',
+  rootCellBackgroundColor: '#eee',
+  headerBackgroundColor: '#eee',
   selectedColor: _colors2.default.blue,
   unselectedColor: _colors2.default.paleBlue,
   hoveredColor: _colors2.default.lightBlue,
