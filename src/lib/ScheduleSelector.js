@@ -8,7 +8,7 @@ import selectionSchemes from './selection-schemes'
 const formatHour = (hour: number, amPM:Array): string => {
   const h = hour === 0 || hour === 12 || hour === 24 ? 12 : hour % 12
   const abb = hour < 12 || hour === 24 ? amPM[0] : amPM[1]
-  return `${h}${abb}`
+  return `${h} ${abb}`
 }
 
 const Wrapper = styled.div`
@@ -16,7 +16,6 @@ const Wrapper = styled.div`
   align-items: center;
   width: 100%;
   user-select: none;
-  margin: ${props => props.fontSize};
 `
 
 const Grid = styled.div`
@@ -36,12 +35,20 @@ export const GridCell = styled.div`
   line-height: ${props => props.height};
 `
 
+export const GridHeader = styled.div`
+  touch-action: none;
+  text-align:center;
+  line-height: ${props => props.height};
+  border-right:1px ${props => props.lineColor} solid;
+`
+
 const DateCell = styled.div`
   width: 100%;
   height: ${props => props.height};
   line-height: ${props => props.height};
-  background-color: ${props => (props.selected ? props.selectedColor : props.unselectedColor)};
-  border:1px #fff solid;
+  background-color: ${props => (props.selected ? props.selectedColor : '#fff')};
+  border-top: 1px ${props => props.lineColor} solid;
+  border-right:1px ${props => props.lineColor} solid;
 
   &:hover {
     background-color: ${props => props.hoveredColor};
@@ -54,8 +61,19 @@ const TimeLabelCell = styled.div`
   width: 100%;
   height: ${props => props.height};
   line-height: ${props => props.height};
-  text-align: right;
-  padding-right:8px;
+  text-align: center;
+  border-right:1px ${props => props.lineColor} solid;
+
+  &:after {
+    content:" ";
+    width: 20px;
+    height:1px;
+    background: #e3edf7;
+    position:absolute;
+    top:0px;
+    right:0;
+  }
+
 `
 
 type PropsType = {
@@ -112,7 +130,8 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
     startDate: new Date(),
     dateFormat: 'M/D',
     margin: 3,
-    cellHeight: '55px',
+    cellHeight: '25px',
+    lineColor: '#eee',
     selectedColor: colors.blue,
     unselectedColor: colors.paleBlue,
     hoveredColor: colors.lightBlue,
@@ -292,7 +311,7 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
     for (let t = this.props.minTime; t <= this.props.maxTime; t += 1) {
       labels.push(
         <Fragment key={`time-${t}`}>
-          <TimeLabelCell height={this.props.cellHeight}>
+          <TimeLabelCell height={this.props.cellHeight} lineColor={this.props.lineColor}>
             <span>{formatHour(t, this.props.amPM)}</span>
           </TimeLabelCell>
           {this.dates.map((dayOfTimes) => this.renderHourCell(dayOfTimes, count))}
@@ -304,18 +323,12 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
     return labels;
   }
 
-  renderHourCell = (dayOfTimes: Array<Date>, t) => (
-    <div key={dayOfTimes[t].day}>
-      {this.renderDateCellWrapper(dayOfTimes[t])}
-    </div>
-  );
+  renderHourCell = (dayOfTimes: Array<Date>, t) => this.renderDateCellWrapper(dayOfTimes[t]);
 
   renderDateColumn = (item, key) => (
-    <Column key={`${item}-${key}`} margin={this.props.margin}>
-      <GridCell margin={this.props.margin} height={this.props.cellHeight}>
-        <span>{item}</span>
-      </GridCell>
-    </Column>
+    <GridHeader key={`${item}-${key}`} margin={this.props.margin} height={this.props.cellHeight} lineColor={this.props.lineColor}>
+      <span>{item}</span>
+    </GridHeader>
   );
 
   renderDateCellWrapper = (time, key): React.Element<*> => {
@@ -364,6 +377,7 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
         <DateCell
           selected={selected}
           innerRef={refSetter}
+          lineColor={this.props.lineColor}
           height={this.props.cellHeight}
           selectedColor={this.props.selectedColor}
           unselectedColor={this.props.unselectedColor}
@@ -374,6 +388,7 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
   }
 
   render(): React.Element<*> {
+    console.log('The data ', this.props.selection)
     return (
       <Wrapper>
         {
@@ -383,7 +398,7 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
             }}
             height={this.props.cellHeight}
           >
-            <div />
+            <GridHeader lineColor={this.props.lineColor} />
             {this.props.daysOfWeek.map(this.renderDateColumn)}
             {/* this.dates.map(this.renderDateColumn) */}
             { this.renderTimeLabels()}
