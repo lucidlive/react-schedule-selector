@@ -4,7 +4,7 @@ const square = (selectionStart: ?Date, selectionEnd: ?Date, dateList: Array<Arra
     if (selectionStart) selected = [selectionStart]
   } else if (selectionStart) {
     const dateIsReversed = selectionStart.day > selectionEnd.day;
-    const timeIsReversed = selectionStart.hour > selectionEnd.hour;
+    const timeIsReversed = selectionStart.position > selectionEnd.position;
 
     selected = dateList.reduce(
       (acc, dayOfTimes) =>
@@ -15,8 +15,8 @@ const square = (selectionStart: ?Date, selectionEnd: ?Date, dateList: Array<Arra
               selectionEnd &&
               t.day >= (dateIsReversed ? selectionEnd.day : selectionStart.day) &&
               t.day <= (dateIsReversed ? selectionStart.day : selectionEnd.day) &&
-              t.hour >= (timeIsReversed ? selectionEnd.hour : selectionStart.hour) &&
-              t.hour <= (timeIsReversed ? selectionStart.hour : selectionEnd.hour)
+              t.position >= (timeIsReversed ? selectionEnd.position : selectionStart.position) &&
+              t.position <= (timeIsReversed ? selectionStart.position : selectionEnd.position)
           )
         ),
       []

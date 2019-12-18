@@ -134,7 +134,7 @@ var ScheduleSelector = function (_React$Component) {
     _this.renderTimeLabels = function () {
       var labels = []; // Ensures time labels start at correct location
       var count = 0;
-      for (var t = _this.props.minTime; t <= _this.props.maxTime; t += 1) {
+      for (var t = 0; t < _this.props.times.length; t += 1) {
         labels.push(React.createElement(
           _react.Fragment,
           { key: 'time-' + t },
@@ -144,7 +144,7 @@ var ScheduleSelector = function (_React$Component) {
             React.createElement(
               'span',
               null,
-              formatHour(t, _this.props.amPM)
+              _this.props.times[t]
             )
           ),
           _this.dates.map(function (dayOfTimes) {
@@ -184,7 +184,7 @@ var ScheduleSelector = function (_React$Component) {
       };
 
       var selected = Boolean(_this.state.selectionDraft.find(function (a) {
-        return a.day === time.day && a.hour === time.hour;
+        return a.day === time.day && a.position === time.position;
       }));
 
       return React.createElement(
@@ -194,7 +194,7 @@ var ScheduleSelector = function (_React$Component) {
           role: 'presentation',
           margin: _this.props.margin,
           height: _this.props.cellHeight,
-          key: time.day + '-' + time.hour
+          key: time.day + '-' + time.position
           // Mouse handlers
           , onMouseDown: startHandler,
           onMouseEnter: function onMouseEnter() {
@@ -238,9 +238,9 @@ var ScheduleSelector = function (_React$Component) {
     _this.cellToDate = new Map();
     for (var d = 0; d < props.numDays; d += 1) {
       var currentDay = [];
-      for (var h = props.minTime; h <= props.maxTime; h += 1) {
+      for (var h = 0; h < _this.props.times.length; h++) {
         currentDay.push({
-          'hour': h,
+          'position': h,
           'day': d
         });
       }
@@ -348,7 +348,7 @@ var ScheduleSelector = function (_React$Component) {
     } else if (selectionType === 'remove') {
       nextDraft = nextDraft.filter(function (a) {
         return !newSelection.find(function (b) {
-          return a.hour === b.hour && a.day === b.day;
+          return a.position === b.position && a.day === b.day;
         });
       });
     }
@@ -363,7 +363,7 @@ var ScheduleSelector = function (_React$Component) {
     // Check if the startTime cell is selected/unselected to determine if this drag-select should
     // add values or remove values
     var timeSelected = this.props.selection.find(function (a) {
-      return a.hour === selectionStart.hour && a.day === selectionStart.day;
+      return a.position === selectionStart.position && a.day === selectionStart.day;
     });
     var selectionType = timeSelected ? 'remove' : 'add';
 
@@ -412,7 +412,6 @@ var ScheduleSelector = function (_React$Component) {
   ScheduleSelector.prototype.render = function render() {
     var _this3 = this;
 
-    console.log('The data ', this.props.selection);
     return React.createElement(
       Wrapper,
       null,
@@ -447,7 +446,7 @@ ScheduleSelector.defaultProps = {
   selection: [],
   selectionScheme: 'square',
   numDays: 7,
-  minTime: 9,
+  minTime: 0,
   maxTime: 23,
   startDate: new Date(),
   dateFormat: 'M/D',
@@ -455,6 +454,7 @@ ScheduleSelector.defaultProps = {
   cellHeight: '25px',
   lineColor: '#eee',
   rootCellColor: '#000',
+  times: ["morning", "afternoon", "evening", "night"],
   rootCellBackgroundColor: '#eee',
   headerBackgroundColor: '#eee',
   selectedColor: _colors2.default.blue,

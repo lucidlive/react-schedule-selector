@@ -7,11 +7,11 @@ var square = function square(selectionStart, selectionEnd, dateList) {
     if (selectionStart) selected = [selectionStart];
   } else if (selectionStart) {
     var dateIsReversed = selectionStart.day > selectionEnd.day;
-    var timeIsReversed = selectionStart.hour > selectionEnd.hour;
+    var timeIsReversed = selectionStart.position > selectionEnd.position;
 
     selected = dateList.reduce(function (acc, dayOfTimes) {
       return acc.concat(dayOfTimes.filter(function (t) {
-        return selectionStart && selectionEnd && t.day >= (dateIsReversed ? selectionEnd.day : selectionStart.day) && t.day <= (dateIsReversed ? selectionStart.day : selectionEnd.day) && t.hour >= (timeIsReversed ? selectionEnd.hour : selectionStart.hour) && t.hour <= (timeIsReversed ? selectionStart.hour : selectionEnd.hour);
+        return selectionStart && selectionEnd && t.day >= (dateIsReversed ? selectionEnd.day : selectionStart.day) && t.day <= (dateIsReversed ? selectionStart.day : selectionEnd.day) && t.position >= (timeIsReversed ? selectionEnd.position : selectionStart.position) && t.position <= (timeIsReversed ? selectionStart.position : selectionEnd.position);
       }));
     }, []);
   }

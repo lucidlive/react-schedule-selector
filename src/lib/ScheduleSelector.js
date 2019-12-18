@@ -133,7 +133,7 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
     selection: [],
     selectionScheme: 'square',
     numDays: 7,
-    minTime: 9,
+    minTime: 0,
     maxTime: 23,
     startDate: new Date(),
     dateFormat: 'M/D',
@@ -141,6 +141,12 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
     cellHeight: '25px',
     lineColor: '#eee',
     rootCellColor: '#000',
+    times: [
+      "morning",
+      "afternoon",
+      "evening",
+      "night"
+    ],
     rootCellBackgroundColor: '#eee',
     headerBackgroundColor: '#eee',
     selectedColor: colors.blue,
@@ -166,9 +172,9 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
     this.cellToDate = new Map()
     for (let d = 0; d < props.numDays; d += 1) {
       const currentDay = []
-      for (let h = props.minTime; h <= props.maxTime; h += 1) {
+      for (let h = 0; h < this.props.times.length; h++) {
         currentDay.push({
-          'hour': h,
+          'position': h,
           'day': d,
           });
       }
@@ -263,7 +269,7 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
       nextDraft = Array.from(new Set([...nextDraft, ...newSelection]))
 
     } else if (selectionType === 'remove') {
-      nextDraft = nextDraft.filter(a => !newSelection.find(b => a.hour === b.hour && a.day === b.day))
+      nextDraft = nextDraft.filter(a => !newSelection.find(b => a.position === b.position && a.day === b.day))
     }
 
     this.setState({ selectionDraft: nextDraft }, callback)
@@ -273,7 +279,7 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
   handleSelectionStartEvent(selectionStart) {
     // Check if the startTime cell is selected/unselected to determine if this drag-select should
     // add values or remove values
-    const timeSelected = this.props.selection.find(a => a.hour === selectionStart.hour && a.day === selectionStart.day);
+    const timeSelected = this.props.selection.find(a => a.position === selectionStart.position && a.day === selectionStart.day);
     const selectionType =  timeSelected ? 'remove' : 'add';
 
     this.setState({
@@ -319,11 +325,11 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
   renderTimeLabels = (): React.Element<*> => {
     const labels = [] // Ensures time labels start at correct location
     let count=0;
-    for (let t = this.props.minTime; t <= this.props.maxTime; t += 1) {
+    for (let t = 0; t < this.props.times.length; t += 1) {
       labels.push(
         <Fragment key={`time-${t}`}>
           <TimeLabelCell height={this.props.cellHeight} lineColor={this.props.lineColor}>
-            <span>{formatHour(t, this.props.amPM)}</span>
+            <span>{this.props.times[t]}</span>
           </TimeLabelCell>
           {this.dates.map((dayOfTimes) => this.renderHourCell(dayOfTimes, count))}
         </Fragment>
@@ -352,7 +358,7 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
       this.handleSelectionStartEvent(time)
     }
 
-    const selected = Boolean(this.state.selectionDraft.find(a => a.day === time.day && a.hour === time.hour));
+    const selected = Boolean(this.state.selectionDraft.find(a => a.day === time.day && a.position === time.position));
 
     return (
       <GridCell
@@ -360,7 +366,7 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
         role="presentation"
         margin={this.props.margin}
         height={this.props.cellHeight}
-        key={`${time.day}-${time.hour}`}
+        key={`${time.day}-${time.position}`}
         // Mouse handlers
         onMouseDown={startHandler}
         onMouseEnter={() => {
@@ -404,7 +410,6 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
   }
 
   render(): React.Element<*> {
-    console.log('The data ', this.props.selection)
     return (
       <Wrapper>
         {
