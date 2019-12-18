@@ -21,8 +21,6 @@ const Wrapper = styled.div`
 
 const Grid = styled.div`
   display: grid;
-  grid-template-columns: auto auto auto auto auto auto auto auto;
-  grid-template-rows: ${props => props.height} ${props => props.height} ${props => props.height} ${props => props.height} ${props => props.height} ${props => props.height} ${props => props.height} ${props => props.height} ${props => props.height} ${props => props.height};
   width: 100%;
   grid-template-columns: repeat(8, 1fr);
   box-sizing: border-box;

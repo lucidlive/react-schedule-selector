@@ -43,27 +43,7 @@ var Wrapper = _styledComponents2.default.div.withConfig({
 var Grid = _styledComponents2.default.div.withConfig({
   displayName: 'ScheduleSelector__Grid',
   componentId: 'sc-10qe3m2-1'
-})(['display:grid;grid-template-columns:auto auto auto auto auto auto auto auto;grid-template-rows:', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ';width:100%;grid-template-columns:repeat(8,1fr);box-sizing:border-box;'], function (props) {
-  return props.height;
-}, function (props) {
-  return props.height;
-}, function (props) {
-  return props.height;
-}, function (props) {
-  return props.height;
-}, function (props) {
-  return props.height;
-}, function (props) {
-  return props.height;
-}, function (props) {
-  return props.height;
-}, function (props) {
-  return props.height;
-}, function (props) {
-  return props.height;
-}, function (props) {
-  return props.height;
-});
+})(['display:grid;width:100%;grid-template-columns:repeat(8,1fr);box-sizing:border-box;']);
 
 var Column = _styledComponents2.default.div.withConfig({
   displayName: 'ScheduleSelector__Column',
