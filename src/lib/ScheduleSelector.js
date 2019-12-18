@@ -40,6 +40,8 @@ export const GridHeader = styled.div`
   text-align:center;
   line-height: ${props => props.height};
   border-right:1px ${props => props.lineColor} solid;
+  background: ${props => props.backgroundColor};
+  color: ${props => props.color};
 `
 
 const DateCell = styled.div`
@@ -47,7 +49,7 @@ const DateCell = styled.div`
   height: ${props => props.height};
   line-height: ${props => props.height};
   background-color: ${props => (props.selected ? props.selectedColor : '#fff')};
-  border-top: 1px ${props => props.lineColor} solid;
+  border-bottom: 1px ${props => props.lineColor} solid;
   border-right:1px ${props => props.lineColor} solid;
 
   &:hover {
@@ -70,7 +72,7 @@ const TimeLabelCell = styled.div`
     height:1px;
     background: #e3edf7;
     position:absolute;
-    top:0px;
+    bottom:0px;
     right:0;
   }
 
@@ -132,6 +134,9 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
     margin: 3,
     cellHeight: '25px',
     lineColor: '#eee',
+    rootCellColor: '#000',
+    rootCellBackgroundColor: '#eee',
+    headerBackgroundColor: '#eee',
     selectedColor: colors.blue,
     unselectedColor: colors.paleBlue,
     hoveredColor: colors.lightBlue,
@@ -326,7 +331,12 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
   renderHourCell = (dayOfTimes: Array<Date>, t) => this.renderDateCellWrapper(dayOfTimes[t]);
 
   renderDateColumn = (item, key) => (
-    <GridHeader key={`${item}-${key}`} margin={this.props.margin} height={this.props.cellHeight} lineColor={this.props.lineColor}>
+    <GridHeader
+      key={`${item}-${key}`}
+      margin={this.props.margin}
+      height={this.props.cellHeight}
+      lineColor={this.props.lineColor}
+      backgroundColor={this.props.headerBackgroundColor}>
       <span>{item}</span>
     </GridHeader>
   );
@@ -398,7 +408,14 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
             }}
             height={this.props.cellHeight}
           >
-            <GridHeader lineColor={this.props.lineColor} />
+            <GridHeader
+              lineColor={this.props.lineColor}
+              height={this.props.cellHeight}
+              color={this.props.rootCellColor}
+              backgroundColor={this.props.rootCellBackgroundColor}
+              >
+              Time
+            </GridHeader>
             {this.props.daysOfWeek.map(this.renderDateColumn)}
             {/* this.dates.map(this.renderDateColumn) */}
             { this.renderTimeLabels()}
