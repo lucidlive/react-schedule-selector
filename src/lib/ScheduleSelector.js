@@ -40,20 +40,18 @@ export const GridHeader = styled.div`
   touch-action: none;
   text-align:center;
   line-height: ${props => props.height};
-  border-right:1px ${props => props.lineColor} solid;
   background: ${props => props.backgroundColor};
   color: ${props => props.color};
   box-sizing: border-box;
+  margin-bottom:10px;
 `
 
 const DateCell = styled.div`
-  width: 100%;
   height: ${props => props.height};
   line-height: ${props => props.height};
-  background-color: ${props => (props.selected ? props.selectedColor : '#fff')};
-  border-bottom: 1px ${props => props.lineColor} solid;
-  border-right:1px ${props => props.lineColor} solid;
+  background-color: ${props => (props.selected ? props.selectedColor : props.unselectedColor)};
   box-sizing: border-box;
+  margin: ${props => props.margin};
 
   &:hover {
     background-color: ${props => props.hoveredColor};
@@ -66,20 +64,8 @@ const TimeLabelCell = styled.div`
   width: 100%;
   height: ${props => props.height};
   line-height: ${props => props.height};
-  text-align: center;
-  border-right:1px ${props => props.lineColor} solid;
+  text-align: left;
   box-sizing: border-box;
-
-  &:after {
-    content:" ";
-    width: 20px;
-    height:1px;
-    background: #e3edf7;
-    position:absolute;
-    bottom:0px;
-    right:0;
-  }
-
 `
 
 type PropsType = {
@@ -135,8 +121,8 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
     maxTime: 23,
     startDate: new Date(),
     dateFormat: 'M/D',
-    margin: 3,
-    cellHeight: '25px',
+    margin: '5px',
+    cellHeight: '20px',
     lineColor: '#eee',
     rootCellColor: '#000',
     times: [
@@ -145,8 +131,8 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
       "evening",
       "night"
     ],
-    rootCellBackgroundColor: '#eee',
-    headerBackgroundColor: '#eee',
+    rootCellBackgroundColor: '#fff',
+    headerBackgroundColor: '#fff',
     selectedColor: colors.blue,
     unselectedColor: colors.paleBlue,
     hoveredColor: colors.lightBlue,
@@ -398,6 +384,7 @@ export default class ScheduleSelector extends React.Component<PropsType, StateTy
           selected={selected}
           innerRef={refSetter}
           lineColor={this.props.lineColor}
+          margin={this.props.margin}
           height={this.props.cellHeight}
           selectedColor={this.props.selectedColor}
           unselectedColor={this.props.unselectedColor}

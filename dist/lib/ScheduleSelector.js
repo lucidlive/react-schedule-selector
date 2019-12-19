@@ -60,10 +60,8 @@ var GridCell = exports.GridCell = _styledComponents2.default.div.withConfig({
 var GridHeader = exports.GridHeader = _styledComponents2.default.div.withConfig({
   displayName: 'ScheduleSelector__GridHeader',
   componentId: 'sc-10qe3m2-4'
-})(['touch-action:none;text-align:center;line-height:', ';border-right:1px ', ' solid;background:', ';color:', ';box-sizing:border-box;'], function (props) {
+})(['touch-action:none;text-align:center;line-height:', ';background:', ';color:', ';box-sizing:border-box;margin-bottom:10px;'], function (props) {
   return props.height;
-}, function (props) {
-  return props.lineColor;
 }, function (props) {
   return props.backgroundColor;
 }, function (props) {
@@ -73,16 +71,14 @@ var GridHeader = exports.GridHeader = _styledComponents2.default.div.withConfig(
 var DateCell = _styledComponents2.default.div.withConfig({
   displayName: 'ScheduleSelector__DateCell',
   componentId: 'sc-10qe3m2-5'
-})(['width:100%;height:', ';line-height:', ';background-color:', ';border-bottom:1px ', ' solid;border-right:1px ', ' solid;box-sizing:border-box;&:hover{background-color:', ';}'], function (props) {
+})(['height:', ';line-height:', ';background-color:', ';box-sizing:border-box;margin:', ';&:hover{background-color:', ';}'], function (props) {
   return props.height;
 }, function (props) {
   return props.height;
 }, function (props) {
-  return props.selected ? props.selectedColor : '#fff';
+  return props.selected ? props.selectedColor : props.unselectedColor;
 }, function (props) {
-  return props.lineColor;
-}, function (props) {
-  return props.lineColor;
+  return props.margin;
 }, function (props) {
   return props.hoveredColor;
 });
@@ -90,12 +86,10 @@ var DateCell = _styledComponents2.default.div.withConfig({
 var TimeLabelCell = _styledComponents2.default.div.withConfig({
   displayName: 'ScheduleSelector__TimeLabelCell',
   componentId: 'sc-10qe3m2-6'
-})(['position:relative;display:block;width:100%;height:', ';line-height:', ';text-align:center;border-right:1px ', ' solid;box-sizing:border-box;&:after{content:" ";width:20px;height:1px;background:#e3edf7;position:absolute;bottom:0px;right:0;}'], function (props) {
+})(['position:relative;display:block;width:100%;height:', ';line-height:', ';text-align:left;box-sizing:border-box;'], function (props) {
   return props.height;
 }, function (props) {
   return props.height;
-}, function (props) {
-  return props.lineColor;
 });
 
 var preventScroll = exports.preventScroll = function preventScroll(e) {
@@ -206,6 +200,7 @@ var ScheduleSelector = function (_React$Component) {
           selected: selected,
           innerRef: refSetter,
           lineColor: _this.props.lineColor,
+          margin: _this.props.margin,
           height: _this.props.cellHeight,
           selectedColor: _this.props.selectedColor,
           unselectedColor: _this.props.unselectedColor,
@@ -430,13 +425,13 @@ ScheduleSelector.defaultProps = {
   maxTime: 23,
   startDate: new Date(),
   dateFormat: 'M/D',
-  margin: 3,
-  cellHeight: '25px',
+  margin: '5px',
+  cellHeight: '20px',
   lineColor: '#eee',
   rootCellColor: '#000',
   times: ["morning", "afternoon", "evening", "night"],
-  rootCellBackgroundColor: '#eee',
-  headerBackgroundColor: '#eee',
+  rootCellBackgroundColor: '#fff',
+  headerBackgroundColor: '#fff',
   selectedColor: _colors2.default.blue,
   unselectedColor: _colors2.default.paleBlue,
   hoveredColor: _colors2.default.lightBlue,
